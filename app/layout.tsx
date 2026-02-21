@@ -13,16 +13,35 @@ const sourceCodePro = Source_Code_Pro({
 export const metadata: Metadata = {
     title: "FleetFlow — Fleet & Logistics Command Center",
     description:
-        "Centralized fleet management: vehicles, trips, drivers, maintenance, and analytics. Built for dispatchers, fleet managers, and safety officers.",
+        "Centralized fleet management: vehicles, trips, drivers, maintenance, and analytics.",
 };
 
 export default function RootLayout({
     children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
     return (
-        <html lang="en" className="dark" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning>
+            <head>
+                {/* 
+          Blocking script — runs before first paint, reads localStorage and
+          applies the correct theme class immediately. Prevents dark→light flash.
+        */}
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('ff-theme') || 'dark';
+                  document.documentElement.classList.remove('dark', 'light');
+                  document.documentElement.classList.add(theme);
+                } catch(e) {
+                  document.documentElement.classList.add('dark');
+                }
+              })();
+            `,
+                    }}
+                />
+            </head>
             <body className={`${sourceCodePro.variable} antialiased`}>
                 <ThemeProvider>
                     {children}

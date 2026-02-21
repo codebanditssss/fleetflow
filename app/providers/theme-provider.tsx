@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useLayoutEffect, useState } from "react";
 
 type Theme = "dark" | "light";
 
@@ -12,21 +12,24 @@ const ThemeContext = createContext<{
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [theme, setTheme] = useState<Theme>("dark");
 
-    // Read from localStorage on mount
-    useEffect(() => {
+    // useLayoutEffect: runs synchronously before browser paint — no flash
+    useLayoutEffect(() => {
         const stored = localStorage.getItem("ff-theme") as Theme | null;
         const initial = stored ?? "dark";
         setTheme(initial);
-        document.documentElement.classList.toggle("dark", initial === "dark");
-        document.documentElement.classList.toggle("light", initial === "light");
+        applyTheme(initial);
     }, []);
+
+    function applyTheme(t: Theme) {
+        document.documentElement.classList.toggle("dark", t === "dark");
+        document.documentElement.classList.toggle("light", t === "light");
+    }
 
     function toggle() {
         setTheme((prev) => {
             const next = prev === "dark" ? "light" : "dark";
             localStorage.setItem("ff-theme", next);
-            document.documentElement.classList.toggle("dark", next === "dark");
-            document.documentElement.classList.toggle("light", next === "light");
+            applyTheme(next);
             return next;
         });
     }
