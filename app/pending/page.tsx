@@ -99,11 +99,6 @@ export default function PendingPage() {
                     </div>
                 </div>
 
-                {/* Auto-checking notice */}
-                <p style={s.autoCheck}>
-                    {checking ? "Checking status…" : "Checking every 5 seconds — page will redirect automatically."}
-                </p>
-
                 {/* Manual check button */}
                 <button style={s.checkBtn} onClick={checkStatus} disabled={checking}>
                     {checking ? "Checking…" : "Check now"}
