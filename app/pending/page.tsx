@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
+import ThemeToggle from "@/components/ui/theme-toggle";
 
 export default function PendingPage() {
     const supabase = createClient();
@@ -49,6 +50,9 @@ export default function PendingPage() {
 
     return (
         <div style={s.page}>
+            <div style={{ position: "fixed", top: "20px", right: "20px" }}>
+                <ThemeToggle />
+            </div>
             <div style={s.card}>
 
                 {/* Logo */}

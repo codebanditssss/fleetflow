@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useSearchParams, useRouter } from "next/navigation";
+import ThemeToggle from "@/components/ui/theme-toggle";
 
 function GoogleIcon() {
   return (
@@ -65,6 +66,9 @@ function LoginInner() {
 
   return (
     <div style={s.page}>
+      <div style={{ position: "fixed", top: "20px", right: "20px" }}>
+        <ThemeToggle />
+      </div>
       <div style={s.card}>
 
         {/* Logo */}

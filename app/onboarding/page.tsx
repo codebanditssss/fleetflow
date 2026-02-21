@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import ThemeToggle from "@/components/ui/theme-toggle";
 
 const ROLES = [
     {
@@ -94,6 +95,9 @@ export default function OnboardingPage() {
 
     return (
         <div style={s.page}>
+            <div style={{ position: "fixed", top: "20px", right: "20px" }}>
+                <ThemeToggle />
+            </div>
             <div style={s.card}>
 
                 {/* Header */}

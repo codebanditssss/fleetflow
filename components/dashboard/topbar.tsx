@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useTheme } from "@/app/providers/theme-provider";
 import ProfileDropdown from "./profile-dropdown";
-import { IconSun, IconMoon } from "./icons";
+import ThemeToggle from "@/components/ui/theme-toggle";
 
 const PAGE_TITLES: Record<string, string> = {
     "/dashboard": "Dashboard",
@@ -23,11 +21,6 @@ interface Props {
 
 export default function Topbar({ fullName, role, avatarUrl }: Props) {
     const pathname = usePathname();
-    const { theme, toggle } = useTheme();
-    const [mounted, setMounted] = useState(false);
-
-    // Only show the icon AFTER hydration — prevents Sun→Moon flash
-    useEffect(() => { setMounted(true); }, []);
 
     const title = PAGE_TITLES[pathname] ?? "Dashboard";
 
@@ -35,17 +28,7 @@ export default function Topbar({ fullName, role, avatarUrl }: Props) {
         <header style={s.topbar}>
             <span style={s.title}>{title}</span>
             <div style={s.right}>
-                <button
-                    style={s.iconBtn}
-                    onClick={toggle}
-                    title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                >
-                    {mounted
-                        ? theme === "dark"
-                            ? <IconSun size={15} />
-                            : <IconMoon size={15} />
-                        : null}
-                </button>
+                <ThemeToggle />
                 <ProfileDropdown fullName={fullName} role={role} avatarUrl={avatarUrl} />
             </div>
         </header>
