@@ -88,7 +88,7 @@ export default function VehicleTable({ vehicles, canWrite }: Props) {
 
             {/* Modals */}
             <AddVehicleModal open={showAdd} onClose={() => setShowAdd(false)} />
-            <AddVehicleModal open={!!editing} onClose={() => setEditing(null)} editVehicle={editing} />
+            <AddVehicleModal key={editing?.id ?? "edit"} open={!!editing} onClose={() => setEditing(null)} editVehicle={editing} />
         </>
     );
 }
