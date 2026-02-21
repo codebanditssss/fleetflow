@@ -39,7 +39,10 @@ export default function OnboardingPage() {
     const [preview, setPreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [mounted, setMounted] = useState(false);
     const fileRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => { setMounted(true); }, []);
 
     function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
         const f = e.target.files?.[0];
@@ -92,6 +95,8 @@ export default function OnboardingPage() {
             setLoading(false);
         }
     }
+
+    if (!mounted) return null;
 
     return (
         <div style={s.page}>
@@ -440,7 +445,13 @@ const s: Record<string, React.CSSProperties> = {
         borderStyle: "solid",
         borderColor: "var(--border)",
     },
-    uploadPlaceholder: { textAlign: "center" },
+    uploadPlaceholder: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center"
+    },
     uploadText: { display: "block", fontSize: "13px", color: "var(--foreground)", fontWeight: 500 },
     uploadSub: { display: "block", fontSize: "11px", color: "var(--muted-foreground)", marginTop: "2px" },
     previewImg: {
