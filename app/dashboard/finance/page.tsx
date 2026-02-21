@@ -22,7 +22,11 @@ export default async function FinancePage() {
             .order("date", { ascending: false })
     ]);
 
-    const canWrite = ["fleet_manager", "financial_analyst"].includes(profile?.role ?? "");
+    const role = profile?.role ?? "";
+    const canRead = ["fleet_manager", "financial_analyst"].includes(role);
+    if (!canRead) redirect("/dashboard");
+
+    const canWrite = ["fleet_manager", "financial_analyst"].includes(role);
 
     // Aggregate stats
     const totalSpend = expenses?.reduce((acc, curr) => acc + Number(curr.amount), 0) ?? 0;

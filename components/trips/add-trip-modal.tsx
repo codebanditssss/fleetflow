@@ -47,9 +47,14 @@ export default function AddTripModal({ open, onClose }: Props) {
 
         async function fetchData() {
             setFetching(true);
+            const today = new Date().toISOString().split("T")[0];
+
             const [vRes, dRes] = await Promise.all([
                 supabase.from("vehicles").select("id, registration_no, model, max_capacity").eq("status", "idle"),
-                supabase.from("drivers").select("id, full_name").eq("status", "active"),
+                supabase.from("drivers")
+                    .select("id, full_name")
+                    .eq("status", "active")
+                    .gt("license_expiry", today), // STRICT: Must not be expired
             ]);
 
             if (vRes.data) setVehicles(vRes.data);

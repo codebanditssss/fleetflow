@@ -21,6 +21,10 @@ interface Props {
 export default function FinanceTable({ expenses, canWrite }: Props) {
     const [showAdd, setShowAdd] = useState(false);
 
+    function handlePrint() {
+        window.print();
+    }
+
     function handleExport() {
         if (!expenses.length) return;
 
@@ -48,10 +52,13 @@ export default function FinanceTable({ expenses, canWrite }: Props) {
 
     return (
         <>
-            <div style={s.toolbar}>
+            <div style={s.toolbar} className="no-print">
                 <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                     <button style={s.exportBtn} onClick={handleExport} disabled={!expenses.length}>
-                        Export CSV
+                        CSV Export
+                    </button>
+                    <button style={s.exportBtn} onClick={handlePrint} disabled={!expenses.length}>
+                        Print Report
                     </button>
                 </div>
                 {canWrite && (

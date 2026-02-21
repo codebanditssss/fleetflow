@@ -16,7 +16,11 @@ export default async function VehiclesPage() {
         supabase.from("vehicles").select("*").order("created_at", { ascending: false }),
     ]);
 
-    const canWrite = WRITE_ROLES.includes(profile?.role ?? "");
+    const role = profile?.role ?? "";
+    const canRead = ["fleet_manager", "dispatcher", "safety_officer"].includes(role);
+    if (!canRead) redirect("/dashboard");
+
+    const canWrite = WRITE_ROLES.includes(role);
 
     return (
         <VehicleTable vehicles={vehicles ?? []} canWrite={canWrite} />

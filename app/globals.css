@@ -130,3 +130,26 @@ body {
   white-space: nowrap;
   border: 0;
 }
+
+/* ─── Print Utilities ─── */
+@media print {
+
+  .no-print,
+  aside,
+  header,
+  button,
+  .tabs,
+  .filterGroup {
+    display: none !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}

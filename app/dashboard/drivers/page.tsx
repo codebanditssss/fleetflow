@@ -16,7 +16,11 @@ export default async function DriversPage() {
         supabase.from("drivers").select("*").order("full_name", { ascending: true }),
     ]);
 
-    const canWrite = WRITE_ROLES.includes(profile?.role ?? "");
+    const role = profile?.role ?? "";
+    const canRead = ["fleet_manager", "safety_officer"].includes(role);
+    if (!canRead) redirect("/dashboard");
+
+    const canWrite = WRITE_ROLES.includes(role);
 
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>

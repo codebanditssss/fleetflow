@@ -19,7 +19,11 @@ export default async function MaintenancePage() {
             .order("date", { ascending: false })
     ]);
 
-    const canWrite = ["fleet_manager", "safety_officer"].includes(profile?.role ?? "");
+    const role = profile?.role ?? "";
+    const canRead = ["fleet_manager", "safety_officer"].includes(role);
+    if (!canRead) redirect("/dashboard");
+
+    const canWrite = ["fleet_manager", "safety_officer"].includes(role);
 
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>

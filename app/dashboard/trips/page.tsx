@@ -23,7 +23,11 @@ export default async function TripsPage() {
             .order("created_at", { ascending: false }),
     ]);
 
-    const canWrite = WRITE_ROLES.includes(profile?.role ?? "");
+    const role = profile?.role ?? "";
+    const canRead = ["fleet_manager", "dispatcher", "safety_officer"].includes(role);
+    if (!canRead) redirect("/dashboard");
+
+    const canWrite = WRITE_ROLES.includes(role);
 
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
