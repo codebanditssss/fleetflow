@@ -20,7 +20,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const status = request.nextUrl.searchParams.get("status");
   const region = request.nextUrl.searchParams.get("region");
   const cacheKey = `dashboard:${session.email}:${type ?? "all"}:${status ?? "all"}:${region ?? "all"}`;
-  const cached = cacheGet<{
+  const cached = await cacheGet<{
     kpis: {
       activeFleet: number;
       maintenanceAlerts: number;
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     vehicles: filteredVehicles,
     trips: db.trips
   };
-  cacheSet(cacheKey, payload, 15000);
+  await cacheSet(cacheKey, payload, 15000);
   return NextResponse.json(payload, {
     headers: {
       "Cache-Control": "private, max-age=15"

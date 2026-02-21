@@ -29,7 +29,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   await lockExpiredDrivers();
   const cacheKey = `drivers:${session.email}`;
-  const cached = cacheGet<{ drivers: Driver[] }>(cacheKey);
+  const cached = await cacheGet<{ drivers: Driver[] }>(cacheKey);
   if (cached) {
     return NextResponse.json(cached, { headers: { "Cache-Control": "private, max-age=20" } });
   }
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   });
 
   const payload = { drivers };
-  cacheSet(cacheKey, payload, 20000);
+  await cacheSet(cacheKey, payload, 20000);
   return NextResponse.json(payload, { headers: { "Cache-Control": "private, max-age=20" } });
 }
 
@@ -92,6 +92,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   if (!driver) {
     return NextResponse.json({ message: "Driver creation failed. License number may already exist." }, { status: 409 });
   }
-  clearAppCache();
+  await clearAppCache();
   return NextResponse.json({ driver: toDriver(driver) }, { status: 201 });
 }

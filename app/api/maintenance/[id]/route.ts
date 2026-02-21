@@ -48,6 +48,6 @@ export async function PATCH(request: NextRequest, context: { params: Promise<{ i
   });
 
   await refreshVehicleAvailability(log.vehicleId);
-  clearAppCache();
+  await clearAppCache();
   return NextResponse.json({ log: toServiceLog(log) });
 }

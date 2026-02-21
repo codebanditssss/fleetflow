@@ -50,7 +50,7 @@ export async function PATCH(request: NextRequest, context: { params: Promise<{ i
 
   await refreshVehicleAvailability(id);
   const refreshed = await prisma.vehicle.findUnique({ where: { id } });
-  clearAppCache();
+  await clearAppCache();
   return NextResponse.json({ vehicle: toVehicle(refreshed ?? vehicle) });
 }
 
@@ -87,6 +87,6 @@ export async function DELETE(
   }
 
   await prisma.vehicle.delete({ where: { id } });
-  clearAppCache();
+  await clearAppCache();
   return NextResponse.json({ ok: true });
 }

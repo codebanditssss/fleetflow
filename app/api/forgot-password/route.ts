@@ -20,7 +20,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
   }
   return NextResponse.json({
-    message: "If the account exists, a reset token has been generated.",
-    token: result.token
+    message:
+      result.delivery === "none"
+        ? "If the account exists, a reset token has been generated."
+        : `If the account exists, reset details were sent via ${result.delivery}.`,
+    token: result.token,
+    delivery: result.delivery
   });
 }

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   const cacheKey = `analytics:${session.email}`;
-  const cached = cacheGet<{
+  const cached = await cacheGet<{
     cards: {
       totalFuelCost: number;
       utilizationRate: number;
@@ -105,7 +105,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     },
     monthlySummary
   };
-  cacheSet(cacheKey, payload, 30000);
+  await cacheSet(cacheKey, payload, 30000);
   return NextResponse.json(payload, {
     headers: {
       "Cache-Control": "private, max-age=30"

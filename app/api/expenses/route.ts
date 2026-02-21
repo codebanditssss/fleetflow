@@ -99,6 +99,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
   });
 
-  clearAppCache();
+  await clearAppCache();
   return NextResponse.json({ expense: toExpense(expense) }, { status: 201 });
 }

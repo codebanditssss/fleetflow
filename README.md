@@ -14,7 +14,7 @@ Full-stack hackathon implementation of the problem statement:
 - One-click report downloads (`CSV` and `PDF`)
 - Search, sort, group-by, and pagination across module tables
 - Middleware security guard (`middleware.ts`) for API/session gate + security headers
-- In-memory API caching with invalidation on writes (dashboard/analytics/drivers)
+- Distributed cache support with Redis fallback to memory (dashboard/analytics/drivers)
 
 ## Stack
 
@@ -55,10 +55,21 @@ It recreates `prisma/dev.db` for deterministic local setup.
 Optional reset email delivery:
 
 ```env
+APP_BASE_URL="http://localhost:3000"
+RESEND_API_KEY="re_..."
+RESEND_FROM_EMAIL="FleetFlow <no-reply@yourdomain.com>"
 RESET_EMAIL_ENDPOINT="https://your-mail-worker.example/send"
 ```
 
 If not set, reset token is shown in UI for local/dev testing.
+`APP_BASE_URL` enables a clickable reset link that prefills `?resetToken=...` on the login page.
+
+Optional distributed cache (Upstash Redis):
+
+```env
+UPSTASH_REDIS_REST_URL="https://...upstash.io"
+UPSTASH_REDIS_REST_TOKEN="..."
+```
 
 ## Seeded Credentials
 

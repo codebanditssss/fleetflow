@@ -98,6 +98,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ message: error.message }, { status: error.status });
   }
 
-  clearAppCache();
+  await clearAppCache();
   return NextResponse.json({ trip }, { status: 201 });
 }

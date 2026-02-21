@@ -69,6 +69,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   });
 
   await refreshVehicleAvailability(parsed.data.vehicleId);
-  clearAppCache();
+  await clearAppCache();
   return NextResponse.json({ log: toServiceLog(log) }, { status: 201 });
 }

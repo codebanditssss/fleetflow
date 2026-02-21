@@ -66,6 +66,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   if (!vehicle) {
     return NextResponse.json({ message: "License plate must be unique." }, { status: 409 });
   }
-  clearAppCache();
+  await clearAppCache();
   return NextResponse.json({ vehicle: toVehicle(vehicle) }, { status: 201 });
 }

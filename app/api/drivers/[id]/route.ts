@@ -54,6 +54,6 @@ export async function PATCH(request: NextRequest, context: { params: Promise<{ i
 
   await lockExpiredDrivers();
   const refreshed = await prisma.driver.findUnique({ where: { id } });
-  clearAppCache();
+  await clearAppCache();
   return NextResponse.json({ driver: toDriver(refreshed ?? driver) });
 }

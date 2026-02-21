@@ -3,6 +3,7 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { Role, UserSession } from "@/lib/types";
+import { buildPasswordResetEmail, sendEmail } from "@/lib/email";
 
 export const SESSION_COOKIE = "fleetflow_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
@@ -100,10 +101,15 @@ export async function deleteSessionByToken(token: string | undefined): Promise<v
   await prisma.session.deleteMany({ where: { token } });
 }
 
-export async function requestPasswordReset(email: string): Promise<{ ok: true; token?: string; userFound: boolean }> {
+export async function requestPasswordReset(email: string): Promise<{
+  ok: true;
+  token?: string;
+  userFound: boolean;
+  delivery: "resend" | "webhook" | "none";
+}> {
   const user = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
   if (!user) {
-    return { ok: true, userFound: false };
+    return { ok: true, userFound: false, delivery: "none" };
   }
 
   await prisma.passwordResetToken.deleteMany({
@@ -122,33 +128,26 @@ export async function requestPasswordReset(email: string): Promise<{ ok: true; t
     }
   });
 
+  const appBaseUrl = process.env.APP_BASE_URL?.trim().replace(/\/+$/, "");
+  const resetUrl = appBaseUrl ? `${appBaseUrl}/?resetToken=${token}` : undefined;
+  const emailContent = buildPasswordResetEmail({
+    token,
+    resetUrl,
+    expiresMinutes: 30
+  });
+
+  const delivery = await sendEmail({
+    to: user.email,
+    subject: emailContent.subject,
+    text: emailContent.text,
+    html: emailContent.html
+  });
+
   if (process.env.NODE_ENV !== "production") {
-    if (process.env.RESET_EMAIL_ENDPOINT) {
-      await fetch(process.env.RESET_EMAIL_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          to: user.email,
-          subject: "FleetFlow password reset",
-          text: `Your reset token is: ${token}`
-        })
-      }).catch(() => undefined);
-    }
-    return { ok: true, token, userFound: true };
+    return { ok: true, token, userFound: true, delivery };
   }
 
-  if (process.env.RESET_EMAIL_ENDPOINT) {
-    await fetch(process.env.RESET_EMAIL_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        to: user.email,
-        subject: "FleetFlow password reset",
-        text: `Use this reset token within 30 minutes: ${token}`
-      })
-    }).catch(() => undefined);
-  }
-  return { ok: true, userFound: true };
+  return { ok: true, userFound: true, delivery };
 }
 
 export async function resetPassword(input: { token: string; newPassword: string }): Promise<boolean> {

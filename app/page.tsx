@@ -280,6 +280,17 @@ export default function HomePage(): React.JSX.Element {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const tokenInUrl = new URLSearchParams(window.location.search).get("resetToken");
+    if (tokenInUrl) {
+      setResetToken(tokenInUrl);
+      setDevResetToken(tokenInUrl);
+    }
+  }, []);
+
+  useEffect(() => {
     if (!session) {
       return;
     }

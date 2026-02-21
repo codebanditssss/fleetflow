@@ -111,6 +111,6 @@ export async function PATCH(request: NextRequest, context: { params: Promise<{ i
     return NextResponse.json({ message: error.message }, { status: error.status });
   }
 
-  clearAppCache();
+  await clearAppCache();
   return NextResponse.json({ trip: updated });
 }
