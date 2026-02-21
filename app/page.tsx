@@ -3,10 +3,54 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import ThemeToggle from "@/components/ui/theme-toggle";
-import { IconVehicles, IconDashboard, IconSafety, IconFinance, IconTrips, IconWrench } from "@/components/dashboard/icons";
+import {
+    IconVehicles,
+    IconDashboard,
+    IconSafety,
+    IconFinance,
+    IconTrips,
+    IconWrench,
+    IconDrivers
+} from "@/components/dashboard/icons";
+
+const ROLES = [
+    {
+        id: "manager",
+        title: "Fleet Manager",
+        subtitle: "Complete Operational Control",
+        description: "Oversee your entire fleet infrastructure from a single pane of glass. Approve team access, manage asset lifecycles, and track high-level performance metrics.",
+        points: ["Centralized User Management", "Fleet Health Monitoring", "Executive Data Summaries"],
+        icon: IconDashboard
+    },
+    {
+        id: "dispatcher",
+        title: "Operations Dispatcher",
+        subtitle: "Efficient Trip Coordination",
+        description: "The operational engine of your supply chain. Seamlessly coordinate trips, validate vehicle weight limits, and pair the right drivers with the right assets.",
+        points: ["Smart Cargo Validation", "Real-time Trip Tracking", "Driver Availability Sync"],
+        icon: IconTrips
+    },
+    {
+        id: "safety",
+        title: "Safety & Compliance",
+        subtitle: "Risk Mitigation & Standards",
+        description: "Never miss a renewal. Monitor driver certifications, manage vehicle maintenance logs, and ensure every asset on the road meets your safety standards.",
+        points: ["Document Expiry Alerts", "Maintenance Scheduling", "Compliance Watchlists"],
+        icon: IconSafety
+    },
+    {
+        id: "finance",
+        title: "Financial Analyst",
+        subtitle: "Cost Optimization & Auditing",
+        description: "Turn data into savings. Audit fuel expenditures, track maintenance ROI, and generate detailed reports for financial stakeholders.",
+        points: ["Expenditure Analytics", "Fuel Cost Tracking", "Professional CSV Exports"],
+        icon: IconFinance
+    }
+];
 
 export default function LandingPage() {
     const [mounted, setMounted] = useState(false);
+    const [activeTab, setActiveTab] = useState(0);
 
     useEffect(() => { setMounted(true); }, []);
 
@@ -14,84 +58,187 @@ export default function LandingPage() {
 
     return (
         <div style={s.page}>
-            {/* Background HUD Lines */}
-            <div style={s.hudLines} />
-
+            {/* Minimal Navigation */}
             <nav style={s.nav}>
-                <div style={s.logoGroup}>
-                    <div style={s.logoBox}><IconVehicles size={14} /></div>
-                    <div style={s.logoTextGroup}>
-                        <span style={s.logoText}>FLEETFLOW</span>
-                        <span style={s.logoSub}>Version 1.0.2</span>
+                <div style={s.navContainer}>
+                    <div style={s.logoGroup}>
+                        <div style={s.logoIcon}><IconVehicles size={18} /></div>
+                        <span style={s.logoText}>FleetFlow</span>
                     </div>
-                </div>
-                <div style={s.navRight}>
-                    <ThemeToggle />
-                    <Link href="/login" style={s.navLink}>Sign In</Link>
+                    <div style={s.navRight}>
+                        <ThemeToggle />
+                        <Link href="/login" style={s.primaryBtnNav}>Sign In</Link>
+                    </div>
                 </div>
             </nav>
 
-            <main style={s.main}>
-                {/* Hero HUD */}
+            <main>
+                {/* Hero Section */}
                 <section style={s.hero}>
-                    <div style={s.heroContent}>
-                        <h1 style={s.title}>
-                            Intelligent <br />
-                            <span style={s.accent}>Logistics Hub</span>
-                        </h1>
-                        <p style={s.heroText}>
-                            Automated fleet coordination, real-time safety compliance,
-                            and comprehensive financial auditing. Designed for the
-                            modern supply chain ecosystem.
-                        </p>
-
-                        <div style={s.heroActions}>
-                            <Link href="/login" style={s.primaryBtn}>
-                                Launch Platform
-                            </Link>
+                    <div style={s.container}>
+                        <div style={s.heroContent}>
+                            <h1 style={s.heroTitle}>
+                                The Intelligent Core of <br />
+                                <span style={s.textGradient}>Modern Logistics</span>
+                            </h1>
+                            <p style={s.heroSub}>
+                                A unified platform designed to streamline fleet operations,
+                                automate compliance, and provide total financial clarity.
+                                Built for teams that move the world.
+                            </p>
+                            <div style={s.heroActions}>
+                                <Link href="/login" style={s.btnMain}>Get Started</Link>
+                                <a href="#features" style={s.btnGhost}>View Features</a>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                {/* Modules Console */}
-                <section style={s.console}>
-                    <div style={s.consoleHeader}>
-                        <h2 style={s.consoleTitle}>System Modules</h2>
-                        <div style={s.consoleLine} />
-                    </div>
+                {/* Role Switcher Section */}
+                <section style={s.rolesSection}>
+                    <div style={s.container}>
+                        <div style={s.sectionHeader}>
+                            <h2 style={s.sectionTitle}>Designed for Every Role</h2>
+                            <p style={s.sectionSub}>Tailored interfaces and tools for every member of your operational team.</p>
+                        </div>
 
-                    <div style={s.moduleGrid}>
-                        <ModuleItem id="01" Icon={IconDashboard} title="Command Center" desc="Real-time KPI visualization and advanced fleet filtering." />
-                        <ModuleItem id="02" Icon={IconTrips} title="Smart Dispatch" desc="Atomic trip scheduling and vehicle capacity validation." />
-                        <ModuleItem id="03" Icon={IconSafety} title="Safety Watch" desc="Compliance monitoring and driver document watchdog." />
-                        <ModuleItem id="04" Icon={IconFinance} title="Audit Ledger" desc="Expense analytics and transparent transaction reporting." />
-                        <ModuleItem id="05" Icon={IconWrench} title="Maintenance" desc="Asset lifecycle tracking and automated status updates." />
-                        <ModuleItem id="06" Icon={IconVehicles} title="Asset Vault" desc="Centralized fleet registry and multi-type vehicle logs." />
+                        <div style={s.roleCard}>
+                            <div style={s.roleSidebar}>
+                                {ROLES.map((role, idx) => (
+                                    <button
+                                        key={role.id}
+                                        onClick={() => setActiveTab(idx)}
+                                        style={{
+                                            ...s.roleTabBtn,
+                                            ...(activeTab === idx ? s.roleTabBtnActive : {})
+                                        }}
+                                    >
+                                        {role.title}
+                                    </button>
+                                ))}
+                            </div>
+                            <div style={s.roleContent}>
+                                <div style={s.roleHeader}>
+                                    <div style={s.roleIconCircle}>
+                                        {(() => {
+                                            const Icon = ROLES[activeTab].icon;
+                                            return <Icon size={24} />;
+                                        })()}
+                                    </div>
+                                    <div>
+                                        <h3 style={s.roleDisplayTitle}>{ROLES[activeTab].title}</h3>
+                                        <span style={s.roleSubtitle}>{ROLES[activeTab].subtitle}</span>
+                                    </div>
+                                </div>
+                                <p style={s.roleDescription}>{ROLES[activeTab].description}</p>
+                                <div style={s.pointsGrid}>
+                                    {ROLES[activeTab].points.map((point, i) => (
+                                        <div key={i} style={s.pointItem}>
+                                            <div style={s.pointBullet} />
+                                            {point}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Features Grid */}
+                <section id="features" style={s.featuresGridSection}>
+                    <div style={s.container}>
+                        <div style={s.sectionHeader}>
+                            <h2 style={s.sectionTitle}>Enterprise Capabilities</h2>
+                            <p style={s.sectionSub}>Built-in modules to handle every facet of the supply chain lifecycle.</p>
+                        </div>
+                        <div style={s.grid}>
+                            <FeatureBox
+                                title="Command Center"
+                                desc="A real-time overview of your entire operation with powerful filtering and analytics."
+                                Icon={IconDashboard}
+                            />
+                            <FeatureBox
+                                title="Unified Registry"
+                                desc="Manage vehicles, drivers, and technical specifications in one centralized database."
+                                Icon={IconVehicles}
+                            />
+                            <FeatureBox
+                                title="Digital Dispatch"
+                                desc="Automated trip scheduling with capacity checks and real-time status updates."
+                                Icon={IconTrips}
+                            />
+                            <FeatureBox
+                                title="Audit & Finance"
+                                desc="Transparent tracking of fuel, maintenance, and operational costs for better ROI."
+                                Icon={IconFinance}
+                            />
+                        </div>
+                    </div>
+                </section>
+
+                {/* Team / Hackathon Banner */}
+                <section style={s.bannerSection}>
+                    <div style={s.container}>
+                        <div style={s.banner}>
+                            <div style={s.bannerText}>
+                                <h2 style={s.bannerTitle}>Built by Team Rocket</h2>
+                                <p style={s.bannerSubText}>Open source core developed for the 2026 Fleet Innovation Hackathon.</p>
+                            </div>
+                            <a href="https://github.com/Annieeeee11/fleetflow" target="_blank" rel="noopener noreferrer" style={s.bannerBtn}>
+                                View Source on GitHub
+                            </a>
+                        </div>
                     </div>
                 </section>
             </main>
 
-            {/* Terminal Footer */}
+            {/* Redesigned Footer */}
             <footer style={s.footer}>
-                <div style={s.footerContainer}>
-                    <span style={s.footerInfo}>FleetFlow System // Team Rocket // 2026</span>
-                    <span style={s.footerInfo}>Secure Session Active</span>
+                <div style={s.container}>
+                    <div style={s.footerTop}>
+                        <div style={s.footerBrand}>
+                            <div style={s.logoGroup}>
+                                <div style={s.logoIcon}><IconVehicles size={18} /></div>
+                                <span style={s.logoText}>FleetFlow</span>
+                            </div>
+                            <p style={s.footerBio}>
+                                The next-generation coordination layer for global logistics.
+                                Secure, scalable, and built for speed.
+                            </p>
+                        </div>
+                        <div style={s.footerLinks}>
+                            <div style={s.linkCol}>
+                                <h4 style={s.linkHeader}>Platform</h4>
+                                <Link href="/login" style={s.footerLink}>Dashboard</Link>
+                                <Link href="/login" style={s.footerLink}>Security</Link>
+                                <Link href="/login" style={s.footerLink}>Audit Trails</Link>
+                            </div>
+                            <div style={s.linkCol}>
+                                <h4 style={s.linkHeader}>Company</h4>
+                                <span style={s.footerLink}>Team Rocket</span>
+                                <a href="https://github.com/Annieeeee11/fleetflow" style={s.footerLink}>GitHub Repo</a>
+                                <span style={s.footerLink}>Hackathon '26</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={s.footerBottom}>
+                        <p style={s.copyText}>© 2026 FleetFlow. All rights reserved.</p>
+                        <div style={s.footerSocials}>
+                            <span style={s.socialText}>Gujarat Vidyapith x Odoo Submission</span>
+                        </div>
+                    </div>
                 </div>
             </footer>
         </div>
     );
 }
 
-function ModuleItem({ id, Icon, title, desc }: { id: string, Icon: any, title: string, desc: string }) {
+function FeatureBox({ title, desc, Icon }: any) {
     return (
-        <div style={s.moduleCard}>
-            <div style={s.moduleTop}>
-                <span style={s.moduleId}>[{id}]</span>
-                <Icon size={16} />
-            </div>
-            <h3 style={s.moduleTitle}>{title}</h3>
-            <p style={s.moduleDesc}>{desc}</p>
-            <div style={s.moduleCorner} />
+        <div style={s.featureBox}>
+            <div style={s.featureIcon}><Icon size={20} /></div>
+            <h3 style={s.featureTitle}>{title}</h3>
+            <p style={s.featureDesc}>{desc}</p>
         </div>
     );
 }
@@ -101,104 +248,245 @@ const s: Record<string, React.CSSProperties> = {
         backgroundColor: "var(--background)",
         minHeight: "100vh",
         color: "var(--foreground)",
-        fontFamily: "'Source Code Pro', monospace",
-        overflowX: "hidden",
-        position: "relative",
+        fontFamily: "Inter, system-ui, -apple-system, sans-serif",
     },
-    hudLines: {
-        position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-        backgroundImage: "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
-        backgroundSize: "40px 40px",
-        opacity: 0.03,
-        pointerEvents: "none",
+    container: {
+        maxWidth: "1100px",
+        margin: "0 auto",
+        padding: "0 24px",
     },
     nav: {
-        height: "64px",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 32px",
+        height: "80px",
+        display: "flex",
+        alignItems: "center",
         borderBottom: "1px solid var(--border)",
-        background: "rgba(var(--background-rgb), 0.5)",
+        backgroundColor: "color-mix(in oklch, var(--background) 80%, transparent)",
         backdropFilter: "blur(10px)",
-        zIndex: 50,
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
     },
-    logoGroup: { display: "flex", alignItems: "center", gap: "12px" },
-    logoBox: {
-        width: "28px", height: "28px",
+    navContainer: {
+        width: "100%",
+        maxWidth: "1100px",
+        margin: "0 auto",
+        padding: "0 24px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    logoGroup: { display: "flex", alignItems: "center", gap: "10px" },
+    logoIcon: {
+        width: "36px", height: "36px",
         backgroundColor: "var(--primary)",
         color: "var(--primary-foreground)",
         display: "flex", alignItems: "center", justifyContent: "center",
-        borderRadius: "2px",
+        borderRadius: "8px",
     },
-    logoTextGroup: { display: "flex", flexDirection: "column" },
-    logoText: { fontSize: "14px", fontWeight: 700, letterSpacing: "1px" },
-    logoSub: { fontSize: "9px", color: "var(--muted-foreground)", fontWeight: 500 },
-    navRight: { display: "flex", alignItems: "center", gap: "24px" },
-    navLink: {
-        fontSize: "12px", color: "var(--foreground)", textDecoration: "none",
-        border: "1px solid var(--border)", padding: "6px 16px", borderRadius: "var(--radius)"
+    logoText: { fontSize: "20px", fontWeight: 700, letterSpacing: "-0.5px" },
+    navRight: { display: "flex", alignItems: "center", gap: "20px" },
+    secondaryBtn: {
+        fontSize: "14px", fontWeight: 500, color: "var(--foreground)", textDecoration: "none"
     },
-
-    main: { maxWidth: "1000px", margin: "0 auto", padding: "80px 24px" },
-
-    hero: { marginBottom: "100px" },
-    heroContent: { maxWidth: "700px" },
-    title: {
-        fontSize: "clamp(48px, 8vw, 72px)",
-        fontWeight: 800,
-        lineHeight: "0.9",
-        letterSpacing: "-0.04em",
-        marginBottom: "24px",
-    },
-    accent: { color: "var(--primary)" },
-    heroText: {
-        fontSize: "16px",
-        color: "var(--muted-foreground)",
-        maxWidth: "520px",
-        lineHeight: "1.6",
-        marginBottom: "40px"
-    },
-    heroActions: { display: "flex", alignItems: "center", gap: "24px" },
-    primaryBtn: {
+    primaryBtnNav: {
+        padding: "10px 20px",
         backgroundColor: "var(--primary)",
         color: "var(--primary-foreground)",
-        padding: "16px 32px",
         borderRadius: "var(--radius)",
-        fontSize: "14px",
-        fontWeight: 700,
-        textDecoration: "none",
-        boxShadow: "0 0 20px color-mix(in oklch, var(--primary) 20%, transparent)",
+        fontSize: "14px", fontWeight: 600, textDecoration: "none",
     },
 
-    console: {},
-    consoleHeader: { display: "flex", alignItems: "center", gap: "16px", marginBottom: "40px" },
-    consoleTitle: { fontSize: "16px", fontWeight: 700, letterSpacing: "2px" },
-    consoleLine: { flex: 1, height: "1px", backgroundColor: "var(--border)" },
-
-    moduleGrid: {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-        gap: "1px",
-        backgroundColor: "var(--border)",
+    // Hero
+    hero: { padding: "120px 0 80px", textAlign: "center" },
+    heroContent: { maxWidth: "800px", margin: "0 auto" },
+    heroTitle: {
+        fontSize: "clamp(48px, 8vw, 72px)",
+        fontWeight: 800,
+        lineHeight: "1.1",
+        marginBottom: "24px",
+        letterSpacing: "-0.03em"
+    },
+    textGradient: { color: "var(--primary)" },
+    heroSub: {
+        fontSize: "19px",
+        color: "var(--muted-foreground)",
+        lineHeight: "1.6",
+        marginBottom: "48px",
+        maxWidth: "640px",
+        margin: "0 auto 48px"
+    },
+    heroActions: { display: "flex", gap: "16px", justifyContent: "center" },
+    btnMain: {
+        padding: "16px 36px",
+        backgroundColor: "var(--primary)",
+        color: "var(--primary-foreground)",
+        borderRadius: "var(--radius)",
+        fontSize: "16px", fontWeight: 600, textDecoration: "none",
+        boxShadow: "var(--shadow-md)"
+    },
+    btnGhost: {
+        padding: "16px 36px",
+        backgroundColor: "transparent",
+        color: "var(--foreground)",
+        borderRadius: "var(--radius)",
         border: "1px solid var(--border)",
-    },
-    moduleCard: {
-        padding: "32px",
-        backgroundColor: "var(--background)",
-        position: "relative",
-    },
-    moduleTop: { display: "flex", justifyContent: "space-between", marginBottom: "24px", color: "var(--muted-foreground)" },
-    moduleId: { fontSize: "10px", fontWeight: 700 },
-    moduleTitle: { fontSize: "16px", fontWeight: 700, marginBottom: "12px", letterSpacing: "0.5px" },
-    moduleDesc: { fontSize: "12px", color: "var(--muted-foreground)", lineHeight: "1.5" },
-    moduleCorner: {
-        position: "absolute", bottom: "8px", right: "8px",
-        width: "6px", height: "6px", borderRight: "1px solid var(--border)", borderBottom: "1px solid var(--border)"
+        fontSize: "16px", fontWeight: 600, textDecoration: "none"
     },
 
-    footer: {
-        borderTop: "1px solid var(--border)",
-        padding: "24px 32px",
+    // Roles
+    rolesSection: { padding: "80px 0" },
+    sectionHeader: { textAlign: "center", marginBottom: "56px" },
+    sectionTitle: { fontSize: "36px", fontWeight: 700, marginBottom: "16px" },
+    sectionSub: { fontSize: "16px", color: "var(--muted-foreground)" },
+    roleCard: {
+        display: "grid",
+        gridTemplateColumns: "300px 1fr",
+        backgroundColor: "var(--card)",
+        border: "1px solid var(--border)",
+        borderRadius: "16px",
+        overflow: "hidden",
+        boxShadow: "var(--shadow-lg)"
     },
-    footerContainer: { display: "flex", justifyContent: "space-between", alignItems: "center" },
-    footerInfo: { fontSize: "10px", color: "var(--muted-foreground)", letterSpacing: "1px" },
+    roleSidebar: {
+        padding: "32px",
+        borderRight: "1px solid var(--border)",
+        backgroundColor: "color-mix(in oklch, var(--secondary) 30%, transparent)",
+        display: "flex", flexDirection: "column", gap: "8px"
+    },
+    roleTabBtn: {
+        padding: "16px 20px",
+        textAlign: "left",
+        backgroundColor: "transparent",
+        border: "none",
+        borderRadius: "8px",
+        color: "var(--muted-foreground)",
+        fontSize: "15px", fontWeight: 600,
+        cursor: "pointer",
+        transition: "all 0.2s"
+    },
+    roleTabBtnActive: {
+        backgroundColor: "var(--primary)",
+        color: "var(--primary-foreground)",
+    },
+    roleContent: { padding: "48px" },
+    roleHeader: { display: "flex", alignItems: "center", gap: "20px", marginBottom: "32px" },
+    roleIconCircle: {
+        width: "56px", height: "56px",
+        borderRadius: "50%",
+        backgroundColor: "var(--secondary)",
+        color: "var(--primary)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        border: "1px solid var(--border)"
+    },
+    roleDisplayTitle: { fontSize: "28px", fontWeight: 700, margin: 0 },
+    roleSubtitle: { fontSize: "14px", color: "var(--primary)", fontWeight: 600, textTransform: "uppercase" },
+    roleDescription: { fontSize: "17px", color: "var(--muted-foreground)", lineHeight: "1.7", marginBottom: "32px" },
+    pointsGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" },
+    pointItem: { display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", fontWeight: 500 },
+    pointBullet: { width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "var(--primary)" },
+
+    // Features Grid
+    featuresGridSection: { padding: "80px 0", backgroundColor: "var(--secondary)" },
+    grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" },
+    featureBox: {
+        padding: "32px",
+        backgroundColor: "var(--card)",
+        border: "1px solid var(--border)",
+        borderRadius: "12px",
+    },
+    featureIcon: { marginBottom: "20px", color: "var(--primary)" },
+    featureTitle: { fontSize: "18px", fontWeight: 700, marginBottom: "12px" },
+    featureDesc: { fontSize: "14px", color: "var(--muted-foreground)", lineHeight: "1.6" },
+
+    // Banner
+    bannerSection: { padding: "80px 0" },
+    banner: {
+        padding: "60px",
+        backgroundColor: "var(--primary)",
+        borderRadius: "24px",
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        color: "var(--primary-foreground)"
+    },
+    bannerTitle: { fontSize: "32px", fontWeight: 800, marginBottom: "8px" },
+    bannerSubText: { fontSize: "16px", opacity: 0.9 },
+    bannerBtn: {
+        padding: "16px 32px",
+        backgroundColor: "var(--background)",
+        color: "var(--primary)",
+        borderRadius: "var(--radius)",
+        fontSize: "16px", fontWeight: 700, textDecoration: "none"
+    },
+
+    // Footer
+    footer: {
+        padding: "100px 0 60px",
+        borderTop: "1px solid var(--border)",
+        backgroundColor: "color-mix(in oklch, var(--secondary) 25%, transparent)"
+    },
+    footerTop: {
+        display: "flex",
+        justifyContent: "space-between",
+        gap: "60px",
+        marginBottom: "80px",
+        flexWrap: "wrap"
+    },
+    footerBrand: {
+        maxWidth: "320px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px"
+    },
+    footerBio: {
+        fontSize: "14px",
+        color: "var(--muted-foreground)",
+        lineHeight: "1.6"
+    },
+    footerLinks: {
+        display: "flex",
+        gap: "80px",
+        flexWrap: "wrap"
+    },
+    linkCol: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px"
+    },
+    linkHeader: {
+        fontSize: "13px",
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "1px",
+        color: "var(--foreground)",
+        marginBottom: "8px"
+    },
+    footerLink: {
+        fontSize: "14px",
+        color: "var(--muted-foreground)",
+        textDecoration: "none",
+        transition: "color 0.2s",
+        cursor: "pointer"
+    },
+    footerBottom: {
+        paddingTop: "40px",
+        borderTop: "1px solid var(--border)",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: "20px"
+    },
+    copyText: {
+        fontSize: "13px",
+        color: "var(--muted-foreground)"
+    },
+    footerSocials: {
+        display: "flex",
+        gap: "20px"
+    },
+    socialText: {
+        fontSize: "12px",
+        fontWeight: 600,
+        color: "var(--primary)",
+        letterSpacing: "0.5px"
+    }
 };

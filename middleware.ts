@@ -26,7 +26,9 @@ export async function middleware(request: NextRequest) {
 
     // Public routes — always accessible
     const publicRoutes = ["/login", "/auth/callback"];
-    if (publicRoutes.some((r) => pathname.startsWith(r))) {
+    const isPublic = pathname === "/" || publicRoutes.some((r) => pathname.startsWith(r));
+
+    if (isPublic) {
         // If already logged in and going to /login, check profile and route
         if (user && pathname === "/login") {
             const { data: profile } = await supabase
