@@ -39,19 +39,19 @@ The system enforces strict data isolation and functional gating based on the aut
 
 ### Fleet Manager
 Full administrative control over all modules, including user approvals and system-wide asset modifications.
-![Fleet Manager View](/fleet_manager.png)
+![Fleet Manager View](public/fleet_manager.png)
 
 ### Dispatcher
 Operational access focused on trip coordination, vehicle status management, and basic safety monitoring.
-![Dispatcher View](/dispatcher.png)
+![Dispatcher View](public/dispatcher.png)
 
 ### Safety Officer
 Focused on compliance, driver documentation, vehicle maintenance logs, and safety watchlists.
-![Safety Officer View](/safety_officer.png)
+![Safety Officer View](public/safety_officer.png)
 
 ### Financial Analyst
 Restricted access to the dashboard and finance module for cost auditing and ROI reporting.
-![Financial Analyst View](/financial_analyst.png)
+![Financial Analyst View](public/financial_analyst.png)
 
 ---
 
