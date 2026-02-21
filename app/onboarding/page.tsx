@@ -158,7 +158,12 @@ export default function OnboardingPage() {
                             disabled={fullName.trim().length < 2}
                             onClick={() => { setError(""); setStep(2); }}
                         >
-                            Continue →
+                            <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                Continue
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter">
+                                    <polyline points="9 18 15 12 9 6" />
+                                </svg>
+                            </span>
                         </button>
                     </div>
                 )}
@@ -210,12 +215,21 @@ export default function OnboardingPage() {
                                     <img src={preview} alt="proof preview" style={s.previewImg} />
                                 ) : file ? (
                                     <div style={s.fileNameRow}>
-                                        <span style={{ fontSize: "24px" }}>📄</span>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" style={{ color: "var(--primary)" }}>
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                            <polyline points="14 2 14 8 20 8" />
+                                        </svg>
                                         <span style={s.fileName}>{file.name}</span>
                                     </div>
                                 ) : (
                                     <div style={s.uploadPlaceholder}>
-                                        <span style={{ fontSize: "28px", display: "block", marginBottom: "8px" }}>⬆️</span>
+                                        <div style={{ marginBottom: "12px", color: "var(--muted-foreground)" }}>
+                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                <polyline points="17 8 12 3 7 8" />
+                                                <line x1="12" y1="3" x2="12" y2="15" />
+                                            </svg>
+                                        </div>
                                         <span style={s.uploadText}>Click to upload</span>
                                         <span style={s.uploadSub}>JPG, PNG or PDF</span>
                                     </div>
@@ -238,7 +252,12 @@ export default function OnboardingPage() {
                         {/* Actions */}
                         <div style={s.actions}>
                             <button style={s.backBtn} onClick={() => setStep(1)}>
-                                ← Back
+                                <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter">
+                                        <polyline points="15 18 9 12 15 6" />
+                                    </svg>
+                                    Back
+                                </span>
                             </button>
                             <button
                                 id="btn-submit-onboarding"
