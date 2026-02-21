@@ -1,68 +1,106 @@
-FleetFlow: Modular Fleet & Logistics Management System
-Objective: To replace inefficient, manual logbooks with a centralized, rule-based digital hub that optimizes
-the lifecycle of a delivery fleet, monitors driver safety, and tracks financial performance.
-1. Target Users
-Fleet Managers: Oversee vehicle health, asset lifecycle, and scheduling.
-Dispatchers: Create trips, assign drivers, and validate cargo loads.
-Safety Officers: Monitor driver compliance, license expirations, and safety scores.
-Financial Analysts: Audit fuel spend, maintenance ROI, and operational costs.
-2. Core System Pages
-Page 1: Login & Authentication
-Purpose: Secure access for different user roles (Manager vs. Dispatcher).
-Features: Email/Password fields, "Forgot Password," and Role-Based Access Control (RBAC).
-Page 2: Command Center (Main Dashboard)
-Purpose: High-level "at-a-glance" fleet oversight.
-KPIs:
-• Active Fleet: Count of vehicles currently "On Trip."
-• Maintenance Alerts: Number of vehicles marked "In Shop."
-• Utilization Rate: % of fleet assigned vs. idle.
-• Pending Cargo: Shipments waiting for assignment.
-Filters: By Vehicle Type (Truck, Van, Bike), Status, or Region.
-Page 3: Vehicle Registry (Asset Management)
-Purpose: CRUD operations for physical assets.
-Data Points: Name/Model, License Plate (Unique ID), Max Load Capacity (kg/tons), and Odometer.
-Logic: Manual toggle for "Out of Service" (Retired).
-Page 4: Trip Dispatcher & Management
-Purpose: Workflow for moving goods from Point A to Point B.
-Features: * Creation Form: Select Available Vehicle + Available Driver.
-• Validation Rule: Prevent trip creation if CargoWeight > MaxCapacity
-• Lifecycle: Draft → Dispatched → Completed → Cancelled.
+# FleetFlow - Intelligent Fleet Management System
 
+**Team Name**: Team Rocket
+**Hackathon**: Odoo x Gujarat Vidyapith Hackathon '26
 
+FleetFlow is a comprehensive fleet management and logistics coordination platform designed to optimize supply chain operations. It provides real-time tracking, asset management, and role-based operational workflows to ensure efficiency, safety, and financial transparency.
 
+## Core Modules
 
+### 1. Command Center (Dashboard)
+A centralized hub providing real-time fleet KPIs. Includes dynamic filtering by asset type (Truck, Van, Heavy, etc.) and visualization of utilization rates, maintenance alerts, and pending cargo status.
 
-Mock up - https://link.excalidraw.com/l/65VNwvy7c4X/9gLrP9aS4YZ
-Page 5: Maintenance & Service Logs
-Purpose: Preventative and reactive health tracking.
-Logic Link: Adding a vehicle to a "Service Log" automatically switches its status to "In Shop",
-removing it from the Dispatcher's selection pool.
-Page 6: Completed Trip, Expense & Fuel Logging
-Purpose: Financial tracking per asset.
-Features: Record Liters, Cost, and Date.
-Calculation: Automated "Total Operational Cost" (Fuel + Maintenance) per Vehicle ID.
-Page 7: Driver Performance & Safety Profiles
-Purpose: Human resource and compliance management.
-Features: * Compliance: License expiry tracking (Blocks assignment if expired).
-• Performance: Trip completion rates and "Safety Scores."
-• Status: Toggle between On Duty, Off Duty, or Suspended.
-Page 8: Operational Analytics & Financial Reports
-Purpose: Data-driven decision making.
-Metrics: * Fuel Efficiency: km / L.
-• Vehicle ROI: \frac{Revenue - (Maintenance + Fuel)}{Acquisition Cost}.
-• Exports: One-click CSV/PDF for monthly payroll and health audits.
-3. Logic & Workflow Summary
-1. Vehicle Intake: Add "Van-05" (500kg capacity) ->Status: Available.
-2. Compliance: Add Driver "Alex." System verifies license validity for "Van" category.
-3. Dispatching: Assign "Alex" to "Van-05" for 450kg load.
-• Check: 450 < 500 (Pass).
-• Status Update: Vehicle & Driver -> On Trip.
-4. Completion: Driver marks trip "Done," enters final Odometer.
-• Status Update: Vehicle & Driver -> Available.
-5. Maintenance: Manager logs "Oil Change."
-• Auto-Logic: Status -> In Shop. Vehicle hidden from Dispatcher.
-6. Analytics: System updates "Cost-per-km" based on fuel logs from the last trip.
-4. Technical Requirements
-Frontend: Modular UI with scannable data tables and status pills.
-Backend: Real-time state management for vehicle/driver availability.
-Database: Relational structure to link Expenses/Trips to a specific Vehicle ID.
+### 2. Vehicle & Driver Registry
+Complete lifecycle management for physical assets and personnel. Tracks vehicle technical specifications, odometer readings, and maintenance schedules. Manages driver documents, safety scores, and license compliance.
+
+### 3. Smart Trip Dispatcher
+Operational core for scheduling and tracking deliveries.
+- Automatic weight validation against vehicle capacity.
+- Integrated asset availability checks (only idle vehicles and active drivers).
+- Real-time status synchronization between trips and assets.
+
+### 4. Safety & Compliance
+Monitoring dashboard for preventative maintenance and regulatory compliance.
+- License expiry alerts for drivers.
+- Maintenance overdue tracking for vehicles.
+- Driver safety watchlist based on behavioral scores.
+
+### 5. Finance & Audit
+Transaction ledger for operational expenditure.
+- Fuel, toll, and maintenance cost tracking.
+- Aggregate spend analytics per vehicle.
+- CSV and Print-ready reporting for financial audits.
+
+---
+
+## Role-Based Access Control (RBAC)
+
+The system enforces strict data isolation and functional gating based on the authenticated user's role.
+
+### Fleet Manager
+Full administrative control over all modules, including user approvals and system-wide asset modifications.
+![Fleet Manager View](/fleet_manager.png)
+
+### Dispatcher
+Operational access focused on trip coordination, vehicle status management, and basic safety monitoring.
+![Dispatcher View](/dispatcher.png)
+
+### Safety Officer
+Focused on compliance, driver documentation, vehicle maintenance logs, and safety watchlists.
+![Safety Officer View](/safety_officer.png)
+
+### Financial Analyst
+Restricted access to the dashboard and finance module for cost auditing and ROI reporting.
+![Financial Analyst View](/financial_analyst.png)
+
+---
+
+## Technical Stack
+
+- **Frontend**: Next.js (App Router), React, TypeScript
+- **Backend & Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth (with RBAC Triggers)
+- **Styling**: Vanilla CSS with Design Tokens
+- **State Management**: React Hooks & Server Components
+
+---
+
+## Setup Guide
+
+### Prerequisites
+- Node.js 18.x or later
+- npm or pnpm
+- A Supabase Project
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Annieeeee11/fleetflow.git
+   cd fleetflow
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Configure Environment Variables:
+   Create a `.env` file based on `.env.example` and add your Supabase credentials.
+
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+The application will be available at `http://localhost:3000`.
+
+---
+
+## Environment Configuration
+
+The following keys are required in your `.env` file for the application to function correctly:
+
+- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL.
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous API key.
+- `SUPABASE_SERVICE_ROLE_KEY`: Required for administrative operations in server components.
