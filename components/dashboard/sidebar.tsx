@@ -41,7 +41,19 @@ export default function Sidebar({ fullName, role, avatarUrl }: Props) {
 
             {/* Nav */}
             <nav style={s.nav}>
-                {NAV.map(({ href, label, Icon }) => {
+                {NAV.filter(item => {
+                    // Role-based visibility check
+                    if (item.href === "/dashboard") return true; // Everyone sees dashboard
+
+                    if (item.href === "/dashboard/vehicles") return ["fleet_manager", "dispatcher", "safety_officer"].includes(role);
+                    if (item.href === "/dashboard/trips") return ["fleet_manager", "dispatcher", "safety_officer"].includes(role);
+                    if (item.href === "/dashboard/drivers") return ["fleet_manager", "safety_officer"].includes(role);
+                    if (item.href === "/dashboard/maintenance") return ["fleet_manager", "safety_officer"].includes(role);
+                    if (item.href === "/dashboard/safety") return ["fleet_manager", "safety_officer", "dispatcher"].includes(role);
+                    if (item.href === "/dashboard/finance") return ["fleet_manager", "financial_analyst"].includes(role);
+
+                    return true;
+                }).map(({ href, label, Icon }) => {
                     const active = href === "/dashboard"
                         ? pathname === "/dashboard"
                         : pathname.startsWith(href);
