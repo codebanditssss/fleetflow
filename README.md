@@ -1,80 +1,68 @@
-# FleetFlow
+FleetFlow: Modular Fleet & Logistics Management System
+Objective: To replace inefficient, manual logbooks with a centralized, rule-based digital hub that optimizes
+the lifecycle of a delivery fleet, monitors driver safety, and tracks financial performance.
+1. Target Users
+Fleet Managers: Oversee vehicle health, asset lifecycle, and scheduling.
+Dispatchers: Create trips, assign drivers, and validate cargo loads.
+Safety Officers: Monitor driver compliance, license expirations, and safety scores.
+Financial Analysts: Audit fuel spend, maintenance ROI, and operational costs.
+2. Core System Pages
+Page 1: Login & Authentication
+Purpose: Secure access for different user roles (Manager vs. Dispatcher).
+Features: Email/Password fields, "Forgot Password," and Role-Based Access Control (RBAC).
+Page 2: Command Center (Main Dashboard)
+Purpose: High-level "at-a-glance" fleet oversight.
+KPIs:
+• Active Fleet: Count of vehicles currently "On Trip."
+• Maintenance Alerts: Number of vehicles marked "In Shop."
+• Utilization Rate: % of fleet assigned vs. idle.
+• Pending Cargo: Shipments waiting for assignment.
+Filters: By Vehicle Type (Truck, Van, Bike), Status, or Region.
+Page 3: Vehicle Registry (Asset Management)
+Purpose: CRUD operations for physical assets.
+Data Points: Name/Model, License Plate (Unique ID), Max Load Capacity (kg/tons), and Odometer.
+Logic: Manual toggle for "Out of Service" (Retired).
+Page 4: Trip Dispatcher & Management
+Purpose: Workflow for moving goods from Point A to Point B.
+Features: * Creation Form: Select Available Vehicle + Available Driver.
+• Validation Rule: Prevent trip creation if CargoWeight > MaxCapacity
+• Lifecycle: Draft → Dispatched → Completed → Cancelled.
 
-Full-stack hackathon implementation of the problem statement:
-- Role-based login and authentication (Manager, Dispatcher, Safety Officer, Financial Analyst)
-- Signup (new user registration with role selection)
-- Forgot/reset password flow (token-based reset for demo/local)
-- Command Center dashboard with KPIs and filters
-- Vehicle Registry (asset CRUD, unique license plate, out-of-service toggle)
-- Trip Dispatcher with capacity validation and lifecycle transitions
-- Maintenance & Service Logs (auto `In Shop` rule)
-- Expense & Fuel Logging (trip/driver/vehicle linked entries)
-- Driver Performance & Safety Profiles (license expiry auto-suspend)
-- Operational Analytics + monthly financial summary
-- One-click report downloads (`CSV` and `PDF`)
-- Search, sort, group-by, and pagination across module tables
-- Middleware security guard (`middleware.ts`) for API/session gate + security headers
-- Distributed cache support with Redis fallback to memory (dashboard/analytics/drivers)
 
-## Stack
 
-- Next.js (App Router) + TypeScript
-- Tailwind CSS + custom UI styles
-- Next API routes for backend
-- Prisma ORM + SQLite database (local dev)
-- Session table + hashed passwords (`bcryptjs`)
-- Zod for request validation
 
-## Run
 
-```bash
-npm install
-npm run db:setup
-npm run dev
-```
-
-Open `http://localhost:3000`.
-
-## Database
-
-Copy `.env.example` to `.env` if needed:
-
-```bash
-cp .env.example .env
-```
-
-Default:
-
-```env
-DATABASE_URL="file:./dev.db"
-```
-
-`npm run db:push` rebuilds local SQLite schema from `prisma/schema.prisma` using Prisma schema diff + `sqlite3`.
-It recreates `prisma/dev.db` for deterministic local setup.
-
-Optional reset email delivery:
-
-```env
-APP_BASE_URL="http://localhost:3000"
-RESEND_API_KEY="re_..."
-RESEND_FROM_EMAIL="FleetFlow <no-reply@yourdomain.com>"
-RESET_EMAIL_ENDPOINT="https://your-mail-worker.example/send"
-```
-
-If not set, reset token is shown in UI for local/dev testing.
-`APP_BASE_URL` enables a clickable reset link that prefills `?resetToken=...` on the login page.
-
-Optional distributed cache (Upstash Redis):
-
-```env
-UPSTASH_REDIS_REST_URL="https://...upstash.io"
-UPSTASH_REDIS_REST_TOKEN="..."
-```
-
-## Seeded Credentials
-
-Seeded users use password `fleet123`:
-- `manager@fleetflow.local`
-- `dispatcher@fleetflow.local`
-- `safety@fleetflow.local`
-- `finance@fleetflow.local`
+Mock up - https://link.excalidraw.com/l/65VNwvy7c4X/9gLrP9aS4YZ
+Page 5: Maintenance & Service Logs
+Purpose: Preventative and reactive health tracking.
+Logic Link: Adding a vehicle to a "Service Log" automatically switches its status to "In Shop",
+removing it from the Dispatcher's selection pool.
+Page 6: Completed Trip, Expense & Fuel Logging
+Purpose: Financial tracking per asset.
+Features: Record Liters, Cost, and Date.
+Calculation: Automated "Total Operational Cost" (Fuel + Maintenance) per Vehicle ID.
+Page 7: Driver Performance & Safety Profiles
+Purpose: Human resource and compliance management.
+Features: * Compliance: License expiry tracking (Blocks assignment if expired).
+• Performance: Trip completion rates and "Safety Scores."
+• Status: Toggle between On Duty, Off Duty, or Suspended.
+Page 8: Operational Analytics & Financial Reports
+Purpose: Data-driven decision making.
+Metrics: * Fuel Efficiency: km / L.
+• Vehicle ROI: \frac{Revenue - (Maintenance + Fuel)}{Acquisition Cost}.
+• Exports: One-click CSV/PDF for monthly payroll and health audits.
+3. Logic & Workflow Summary
+1. Vehicle Intake: Add "Van-05" (500kg capacity) ->Status: Available.
+2. Compliance: Add Driver "Alex." System verifies license validity for "Van" category.
+3. Dispatching: Assign "Alex" to "Van-05" for 450kg load.
+• Check: 450 < 500 (Pass).
+• Status Update: Vehicle & Driver -> On Trip.
+4. Completion: Driver marks trip "Done," enters final Odometer.
+• Status Update: Vehicle & Driver -> Available.
+5. Maintenance: Manager logs "Oil Change."
+• Auto-Logic: Status -> In Shop. Vehicle hidden from Dispatcher.
+6. Analytics: System updates "Cost-per-km" based on fuel logs from the last trip.
+4. Technical Requirements
+Frontend: Modular UI with scannable data tables and status pills.
+Backend: Real-time state management for vehicle/driver availability.
+Database: Relational structure to link Expenses/Trips to a specific Vehicle ID.
