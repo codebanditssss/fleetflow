@@ -9,13 +9,9 @@ export async function middleware(request: NextRequest) {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
             cookies: {
-                getAll() {
-                    return request.cookies.getAll();
-                },
+                getAll() { return request.cookies.getAll(); },
                 setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value }) =>
-                        request.cookies.set(name, value)
-                    );
+                    cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
                     supabaseResponse = NextResponse.next({ request });
                     cookiesToSet.forEach(({ name, value, options }) =>
                         supabaseResponse.cookies.set(name, value, options)
@@ -25,22 +21,64 @@ export async function middleware(request: NextRequest) {
         }
     );
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-
+    const { data: { user } } = await supabase.auth.getUser();
     const { pathname } = request.nextUrl;
 
-    // If not logged in and not on the login page, redirect to /login
-    if (!user && pathname !== "/login") {
+    // Public routes — always accessible
+    const publicRoutes = ["/login", "/auth/callback"];
+    if (publicRoutes.some((r) => pathname.startsWith(r))) {
+        // If already logged in and going to /login, check profile and route
+        if (user && pathname === "/login") {
+            const { data: profile } = await supabase
+                .from("profiles")
+                .select("status")
+                .eq("id", user.id)
+                .single();
+
+            if (!profile) return NextResponse.redirect(new URL("/onboarding", request.url));
+            if (profile.status === "pending") return NextResponse.redirect(new URL("/pending", request.url));
+            if (profile.status === "approved") return NextResponse.redirect(new URL("/dashboard", request.url));
+        }
+        return supabaseResponse;
+    }
+
+    // Not logged in — send to login
+    if (!user) {
         return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    // If logged in and on /login, redirect to dashboard
-    if (user && pathname === "/login") {
-        return NextResponse.redirect(new URL("/dashboard", request.url));
+    // Logged in — fetch profile
+    const { data: profile } = await supabase
+        .from("profiles")
+        .select("status")
+        .eq("id", user.id)
+        .single();
+
+    // No profile yet → must complete onboarding
+    if (!profile) {
+        if (pathname !== "/onboarding") {
+            return NextResponse.redirect(new URL("/onboarding", request.url));
+        }
+        return supabaseResponse;
     }
 
+    // Profile pending → hold at pending page
+    if (profile.status === "pending") {
+        if (pathname !== "/pending") {
+            return NextResponse.redirect(new URL("/pending", request.url));
+        }
+        return supabaseResponse;
+    }
+
+    // Profile rejected → send back to login with message
+    if (profile.status === "rejected") {
+        if (pathname !== "/login") {
+            return NextResponse.redirect(new URL("/login?error=rejected", request.url));
+        }
+        return supabaseResponse;
+    }
+
+    // Approved — allow through
     return supabaseResponse;
 }
 
