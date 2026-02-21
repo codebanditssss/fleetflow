@@ -37,6 +37,22 @@ Transaction ledger for operational expenditure.
 
 ---
 
+## Access Control Matrix
+
+The following table outlines the permissions and visibility for each system role:
+
+| Module | Fleet Manager | Dispatcher | Safety Officer | Financial Analyst |
+| :--- | :---: | :---: | :---: | :---: |
+| **Command Center** | Full Access | View Only | View Only | View Only |
+| **Vehicle Registry** | Manage All | Edit Status | View Only | No Access |
+| **Trip Dispatcher** | Manage All | Manage All | View Only | No Access |
+| **Driver Registry** | Manage All | View Only | Manage All | No Access |
+| **Safety Center** | Full Access | View Alerts | Full Access | No Access |
+| **Finance & Audit** | Full Access | No Access | No Access | Full Access |
+| **Maintenance** | Full Access | View Only | Manage All | No Access |
+
+---
+
 ## Role-Based Access Control (RBAC)
 
 The system enforces strict data isolation and functional gating based on the authenticated user's role.
