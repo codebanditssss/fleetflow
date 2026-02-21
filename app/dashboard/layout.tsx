@@ -21,8 +21,10 @@ export default async function DashboardLayout({
     if (!profile) redirect("/onboarding");
     if (profile.status !== "approved") redirect("/pending");
 
+    const avatarUrl: string | null = user.user_metadata?.avatar_url ?? null;
+
     return (
-        <Shell fullName={profile.full_name} role={profile.role}>
+        <Shell fullName={profile.full_name} role={profile.role} avatarUrl={avatarUrl}>
             {children}
         </Shell>
     );

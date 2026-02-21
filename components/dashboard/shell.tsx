@@ -4,15 +4,16 @@ import Topbar from "./topbar";
 interface Props {
     fullName: string;
     role: string;
+    avatarUrl: string | null;
     children: React.ReactNode;
 }
 
-export default function Shell({ fullName, role, children }: Props) {
+export default function Shell({ fullName, role, avatarUrl, children }: Props) {
     return (
         <div style={s.root}>
-            <Sidebar fullName={fullName} role={role} />
+            <Sidebar fullName={fullName} role={role} avatarUrl={avatarUrl} />
             <div style={s.right}>
-                <Topbar fullName={fullName} role={role} />
+                <Topbar fullName={fullName} role={role} avatarUrl={avatarUrl} />
                 <main style={s.main}>
                     {children}
                 </main>
