@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Avatar from "./avatar";
 import {
     IconDashboard, IconVehicles, IconTrips,
-    IconDrivers, IconSafety, IconFinance, IconWrench,
+    IconDrivers, IconSafety, IconFinance, IconWrench, IconClose
 } from "./icons";
 
 const NAV = [
@@ -26,32 +26,48 @@ interface Props {
     fullName: string;
     role: string;
     avatarUrl: string | null;
+    open: boolean;
+    onClose: () => void;
 }
 
-export default function Sidebar({ fullName, role, avatarUrl }: Props) {
+export default function Sidebar({ fullName, role, avatarUrl, open, onClose }: Props) {
     const pathname = usePathname();
 
+    const sidebarStyle: React.CSSProperties = {
+        ...s.sidebar,
+        transform: undefined, // Let CSS classes handle it if possible, or use inline
+    };
+
     return (
-        <aside style={s.sidebar}>
+        <aside
+            style={sidebarStyle}
+            className={`dashboard-sidebar ${open ? "sidebar-open" : ""}`}
+        >
             {/* Logo */}
             <div style={s.logoRow}>
-                <div style={s.logoBox}><IconVehicles size={16} /></div>
-                <span style={s.logoText}>FleetFlow</span>
+                <div style={s.logoGroup}>
+                    <div style={s.logoBox}><IconVehicles size={16} /></div>
+                    <span style={s.logoText}>FleetFlow</span>
+                </div>
+                <button
+                    onClick={onClose}
+                    style={s.closeBtn}
+                    className="md-show"
+                >
+                    <IconClose size={20} />
+                </button>
             </div>
 
             {/* Nav */}
             <nav style={s.nav}>
                 {NAV.filter(item => {
-                    // Role-based visibility check
-                    if (item.href === "/dashboard") return true; // Everyone sees dashboard
-
+                    if (item.href === "/dashboard") return true;
                     if (item.href === "/dashboard/vehicles") return ["fleet_manager", "dispatcher", "safety_officer"].includes(role);
                     if (item.href === "/dashboard/trips") return ["fleet_manager", "dispatcher", "safety_officer"].includes(role);
                     if (item.href === "/dashboard/drivers") return ["fleet_manager", "safety_officer"].includes(role);
                     if (item.href === "/dashboard/maintenance") return ["fleet_manager", "safety_officer"].includes(role);
                     if (item.href === "/dashboard/safety") return ["fleet_manager", "safety_officer", "dispatcher"].includes(role);
                     if (item.href === "/dashboard/finance") return ["fleet_manager", "financial_analyst"].includes(role);
-
                     return true;
                 }).map(({ href, label, Icon }) => {
                     const active = href === "/dashboard"
@@ -72,7 +88,6 @@ export default function Sidebar({ fullName, role, avatarUrl }: Props) {
                 })}
             </nav>
 
-            {/* User identity — sign out is in topbar dropdown */}
             <div style={s.userBlock}>
                 <div style={s.divider} />
                 <div style={s.userRow}>
@@ -83,24 +98,59 @@ export default function Sidebar({ fullName, role, avatarUrl }: Props) {
                     </div>
                 </div>
             </div>
+
+            <style jsx global>{`
+                .dashboard-sidebar {
+                    width: 220px;
+                    height: 100vh;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    display: flex;
+                    flex-direction: column;
+                    background-color: var(--sidebar);
+                    border-right: 1px solid var(--border);
+                    z-index: 40;
+                    transition: transform 0.3s ease;
+                }
+
+                @media (max-width: 900px) {
+                    .dashboard-sidebar {
+                        transform: translateX(-100%);
+                    }
+                    .dashboard-sidebar.sidebar-open {
+                        transform: translateX(0);
+                    }
+                }
+
+                @media (min-width: 901px) {
+                    .dashboard-sidebar {
+                        transform: translateX(0) !important;
+                    }
+                    /* Add margin to main content on desktop */
+                    main {
+                        margin-left: 220px;
+                    }
+                }
+            `}</style>
         </aside>
     );
 }
 
 const s: Record<string, React.CSSProperties> = {
     sidebar: {
-        width: "220px", height: "100vh",
-        position: "fixed", top: 0, left: 0,
-        display: "flex", flexDirection: "column",
-        backgroundColor: "var(--sidebar)",
-        borderRightWidth: "1px", borderRightStyle: "solid", borderRightColor: "var(--border)",
-        zIndex: 40,
+        // Most styles moved to <style jsx> for media queries
     },
     logoRow: {
-        display: "flex", alignItems: "center", gap: "10px",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 16px", height: "56px",
         borderBottomWidth: "1px", borderBottomStyle: "solid", borderBottomColor: "var(--border)",
         flexShrink: 0,
+    },
+    logoGroup: { display: "flex", alignItems: "center", gap: "10px" },
+    closeBtn: {
+        background: "none", border: "none", color: "var(--muted-foreground)",
+        cursor: "pointer", padding: "4px", display: "flex", alignItems: "center",
     },
     logoBox: {
         width: "28px", height: "28px",

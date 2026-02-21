@@ -131,6 +131,27 @@ body {
   border: 0;
 }
 
+/* ─── Responsive Utilities ─── */
+@media (max-width: 900px) {
+  .md-hide {
+    display: none !important;
+  }
+
+  .md-show {
+    display: block !important;
+  }
+}
+
+@media (min-width: 901px) {
+  .md-hide {
+    display: block !important;
+  }
+
+  .md-show {
+    display: none !important;
+  }
+}
+
 /* ─── Print Utilities ─── */
 @media print {
 

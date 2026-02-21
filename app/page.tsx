@@ -297,7 +297,7 @@ const s: Record<string, React.CSSProperties> = {
     },
 
     // Hero
-    hero: { padding: "120px 0 80px", textAlign: "center" },
+    hero: { padding: "clamp(80px, 15vh, 120px) 0 clamp(40px, 10vh, 80px)", textAlign: "center" },
     heroContent: { maxWidth: "800px", margin: "0 auto" },
     heroTitle: {
         fontSize: "clamp(48px, 8vw, 72px)",
@@ -339,8 +339,9 @@ const s: Record<string, React.CSSProperties> = {
     sectionTitle: { fontSize: "36px", fontWeight: 700, marginBottom: "16px" },
     sectionSub: { fontSize: "16px", color: "var(--muted-foreground)" },
     roleCard: {
-        display: "grid",
-        gridTemplateColumns: "300px 1fr",
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
         backgroundColor: "var(--card)",
         border: "1px solid var(--border)",
         borderRadius: "16px",
@@ -348,6 +349,8 @@ const s: Record<string, React.CSSProperties> = {
         boxShadow: "var(--shadow-lg)"
     },
     roleSidebar: {
+        width: "clamp(100%, 100%, 300px)",
+        flex: "1 0 300px",
         padding: "32px",
         borderRight: "1px solid var(--border)",
         backgroundColor: "color-mix(in oklch, var(--secondary) 30%, transparent)",
@@ -368,7 +371,7 @@ const s: Record<string, React.CSSProperties> = {
         backgroundColor: "var(--primary)",
         color: "var(--primary-foreground)",
     },
-    roleContent: { padding: "48px" },
+    roleContent: { padding: "clamp(24px, 5vw, 48px)", flex: "1 1 500px", minWidth: "300px" },
     roleHeader: { display: "flex", alignItems: "center", gap: "20px", marginBottom: "32px" },
     roleIconCircle: {
         width: "56px", height: "56px",
@@ -381,7 +384,7 @@ const s: Record<string, React.CSSProperties> = {
     roleDisplayTitle: { fontSize: "28px", fontWeight: 700, margin: 0 },
     roleSubtitle: { fontSize: "14px", color: "var(--primary)", fontWeight: 600, textTransform: "uppercase" },
     roleDescription: { fontSize: "17px", color: "var(--muted-foreground)", lineHeight: "1.7", marginBottom: "32px" },
-    pointsGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" },
+    pointsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" },
     pointItem: { display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", fontWeight: 500 },
     pointBullet: { width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "var(--primary)" },
 
@@ -401,10 +404,15 @@ const s: Record<string, React.CSSProperties> = {
     // Banner
     bannerSection: { padding: "80px 0" },
     banner: {
-        padding: "60px",
+        padding: "clamp(32px, 8vw, 60px)",
         backgroundColor: "var(--primary)",
         borderRadius: "24px",
-        display: "flex", justifyContent: "space-between", alignItems: "center",
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: "32px",
         color: "var(--primary-foreground)"
     },
     bannerTitle: { fontSize: "32px", fontWeight: 800, marginBottom: "8px" },
@@ -426,9 +434,10 @@ const s: Record<string, React.CSSProperties> = {
     footerTop: {
         display: "flex",
         justifyContent: "space-between",
-        gap: "60px",
-        marginBottom: "80px",
-        flexWrap: "wrap"
+        gap: "40px",
+        marginBottom: "60px",
+        flexWrap: "wrap",
+        flexDirection: "row"
     },
     footerBrand: {
         maxWidth: "320px",
@@ -443,7 +452,7 @@ const s: Record<string, React.CSSProperties> = {
     },
     footerLinks: {
         display: "flex",
-        gap: "80px",
+        gap: "clamp(40px, 10vw, 80px)",
         flexWrap: "wrap"
     },
     linkCol: {
