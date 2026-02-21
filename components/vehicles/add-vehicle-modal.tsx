@@ -13,10 +13,12 @@ interface Props {
 export interface Vehicle {
     id: string;
     registration_no: string;
+    model: string | null;
     type: string;
     status: string;
     fuel_percent: number;
     km_driven: number;
+    max_capacity: number;
     next_maintenance_date: string | null;
 }
 
@@ -25,10 +27,12 @@ const STATUSES = ["active", "idle", "maintenance", "retired"];
 
 const EMPTY = {
     registration_no: "",
+    model: "",
     type: "truck",
     status: "idle",
     fuel_percent: 100,
     km_driven: 0,
+    max_capacity: 0,
     next_maintenance_date: "",
 };
 
@@ -37,10 +41,12 @@ export default function AddVehicleModal({ open, onClose, editVehicle }: Props) {
     const router = useRouter();
     const [form, setForm] = useState(editVehicle ? {
         registration_no: editVehicle.registration_no,
+        model: editVehicle.model ?? "",
         type: editVehicle.type,
         status: editVehicle.status,
         fuel_percent: editVehicle.fuel_percent,
         km_driven: editVehicle.km_driven,
+        max_capacity: editVehicle.max_capacity,
         next_maintenance_date: editVehicle.next_maintenance_date ?? "",
     } : EMPTY);
     const [loading, setLoading] = useState(false);
@@ -59,8 +65,10 @@ export default function AddVehicleModal({ open, onClose, editVehicle }: Props) {
 
         const payload = {
             ...form,
+            model: form.model || null,
             fuel_percent: Number(form.fuel_percent),
             km_driven: Number(form.km_driven),
+            max_capacity: Number(form.max_capacity),
             next_maintenance_date: form.next_maintenance_date || null,
         };
 
@@ -86,11 +94,19 @@ export default function AddVehicleModal({ open, onClose, editVehicle }: Props) {
                 </div>
 
                 <form style={s.form} onSubmit={handleSubmit}>
-                    <Field label="Registration No." required>
-                        <input style={s.input} value={form.registration_no}
-                            onChange={(e) => set("registration_no", e.target.value)}
-                            placeholder="e.g. MH12AB1234" required />
-                    </Field>
+
+                    <div style={s.row}>
+                        <Field label="Registration No. *">
+                            <input style={s.input} value={form.registration_no}
+                                onChange={(e) => set("registration_no", e.target.value)}
+                                placeholder="e.g. MH12AB1234" required />
+                        </Field>
+                        <Field label="Model">
+                            <input style={s.input} value={form.model}
+                                onChange={(e) => set("model", e.target.value)}
+                                placeholder="e.g. Tata LPT 1918" />
+                        </Field>
+                    </div>
 
                     <div style={s.row}>
                         <Field label="Type">
@@ -100,8 +116,22 @@ export default function AddVehicleModal({ open, onClose, editVehicle }: Props) {
                         </Field>
                         <Field label="Status">
                             <select style={s.input} value={form.status} onChange={(e) => set("status", e.target.value)}>
-                                {STATUSES.map((s) => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
+                                {STATUSES.map((st) => <option key={st} value={st}>{st.charAt(0).toUpperCase() + st.slice(1)}</option>)}
                             </select>
+                        </Field>
+                    </div>
+
+                    <div style={s.row}>
+                        <Field label="Max Load Capacity (kg)">
+                            <input style={s.input} type="number" min={0}
+                                value={form.max_capacity}
+                                onChange={(e) => set("max_capacity", e.target.value)}
+                                placeholder="e.g. 5000" />
+                        </Field>
+                        <Field label="Odometer (km)">
+                            <input style={s.input} type="number" min={0}
+                                value={form.km_driven}
+                                onChange={(e) => set("km_driven", e.target.value)} />
                         </Field>
                     </div>
 
@@ -111,18 +141,12 @@ export default function AddVehicleModal({ open, onClose, editVehicle }: Props) {
                                 value={form.fuel_percent}
                                 onChange={(e) => set("fuel_percent", e.target.value)} />
                         </Field>
-                        <Field label="KM Driven">
-                            <input style={s.input} type="number" min={0}
-                                value={form.km_driven}
-                                onChange={(e) => set("km_driven", e.target.value)} />
+                        <Field label="Next Service Date">
+                            <input style={s.input} type="date"
+                                value={form.next_maintenance_date ?? ""}
+                                onChange={(e) => set("next_maintenance_date", e.target.value)} />
                         </Field>
                     </div>
-
-                    <Field label="Next Maintenance Date">
-                        <input style={s.input} type="date"
-                            value={form.next_maintenance_date ?? ""}
-                            onChange={(e) => set("next_maintenance_date", e.target.value)} />
-                    </Field>
 
                     {error && <p style={s.error}>{error}</p>}
 
@@ -132,17 +156,18 @@ export default function AddVehicleModal({ open, onClose, editVehicle }: Props) {
                             {loading ? "Saving…" : editVehicle ? "Save Changes" : "Add Vehicle"}
                         </button>
                     </div>
+
                 </form>
             </div>
         </div>
     );
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "5px", flex: 1 }}>
             <label style={{ fontSize: "11px", fontWeight: 500, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                {label}{required && " *"}
+                {label}
             </label>
             {children}
         </div>
@@ -151,18 +176,14 @@ function Field({ label, required, children }: { label: string; required?: boolea
 
 const s: Record<string, React.CSSProperties> = {
     overlay: {
-        position: "fixed", inset: 0,
-        backgroundColor: "oklch(0 0 0 / 0.5)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        zIndex: 200,
+        position: "fixed", inset: 0, backgroundColor: "oklch(0 0 0 / 0.5)",
+        display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200,
     },
     modal: {
-        width: "100%", maxWidth: "480px",
+        width: "100%", maxWidth: "520px",
         backgroundColor: "var(--card)",
         borderWidth: "1px", borderStyle: "solid", borderColor: "var(--border)",
-        borderRadius: "var(--radius)",
-        boxShadow: "var(--shadow-lg)",
-        overflow: "hidden",
+        borderRadius: "var(--radius)", boxShadow: "var(--shadow-lg)", overflow: "hidden",
     },
     header: {
         display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -171,15 +192,14 @@ const s: Record<string, React.CSSProperties> = {
     },
     title: { fontSize: "14px", fontWeight: 600, color: "var(--foreground)" },
     closeBtn: { background: "none", border: "none", color: "var(--muted-foreground)", cursor: "pointer", fontSize: "14px", fontFamily: "inherit" },
-    form: { padding: "20px", display: "flex", flexDirection: "column", gap: "16px" },
+    form: { padding: "20px", display: "flex", flexDirection: "column", gap: "14px" },
     row: { display: "flex", gap: "12px" },
     input: {
         width: "100%", padding: "8px 10px",
         backgroundColor: "var(--input)",
         borderWidth: "1px", borderStyle: "solid", borderColor: "var(--border)",
         borderRadius: "var(--radius)",
-        color: "var(--foreground)", fontSize: "13px", fontFamily: "inherit",
-        outline: "none",
+        color: "var(--foreground)", fontSize: "13px", fontFamily: "inherit", outline: "none",
     },
     error: { fontSize: "12px", color: "var(--destructive)" },
     actions: { display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "4px" },
