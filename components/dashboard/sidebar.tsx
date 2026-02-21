@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Avatar from "./avatar";
 import {
     IconDashboard, IconVehicles, IconTrips,
-    IconDrivers, IconSafety, IconFinance,
+    IconDrivers, IconSafety, IconFinance, IconWrench,
 } from "./icons";
 
 const NAV = [
@@ -13,6 +13,7 @@ const NAV = [
     { href: "/dashboard/vehicles", label: "Vehicles", Icon: IconVehicles },
     { href: "/dashboard/trips", label: "Trips", Icon: IconTrips },
     { href: "/dashboard/drivers", label: "Drivers", Icon: IconDrivers },
+    { href: "/dashboard/maintenance", label: "Maintenance", Icon: IconWrench },
     { href: "/dashboard/safety", label: "Safety", Icon: IconSafety },
     { href: "/dashboard/finance", label: "Finance", Icon: IconFinance },
 ];
